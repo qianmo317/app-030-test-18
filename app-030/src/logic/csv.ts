@@ -71,6 +71,8 @@ export function parseDelimitedText(text: string, delimiter?: string): string[][]
   }
   return rows
     .map((cells) => cells.map((cell) => cell.trim()))
+    // 仅丢弃全空行；完全相同的相邻数据行必须原样保留——业务上量体表允许
+    // 同名同班同尺寸的重复行，是否重复由导入链路（duplicateKey）判定并只提示不删除（规格书 §8）。
     .filter((cells) => cells.some((cell) => cell !== ''))
 }
 

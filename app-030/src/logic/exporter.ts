@@ -19,6 +19,23 @@ export type ExportContext = BaseContext & {
   generatedAt: Date
 }
 
+/**
+ * 下单表导出门禁（唯一判准，页面按钮禁用与测试都调它）：
+ * 守恒不通过（有未归并行或常规 + 特殊 ≠ 有效人数）时禁止导出下单汇总表。
+ * 量体明细 / 特殊清单用于回贴核对，不受此门禁限制。
+ */
+export function canExportOrderSheet(summary: Summary): boolean {
+  return summary.conserved
+}
+
+export function exportBlockReason(summary: Summary): string {
+  if (summary.conserved) return ''
+  if (summary.unmerged.length > 0) {
+    return `守恒未通过：${summary.unmerged.length} 行未归并，已阻止导出下单表`
+  }
+  return `守恒未通过：${conservationText(summary)}，已阻止导出下单表`
+}
+
 export function genderLabel(gender: Gender): string {
   return gender === 'male' ? '男' : '女'
 }

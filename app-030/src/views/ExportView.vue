@@ -5,6 +5,7 @@ import { ensureMerged, flushProject, getProject, getRule, store } from '../logic
 import { buildSummary, conservationText } from '../logic/merge'
 import {
   buildOrderSheet,
+  canExportOrderSheet,
   detailRows,
   detailWorkbookSheets,
   exportBaseName,
@@ -46,7 +47,7 @@ const orderSheet = computed(() => {
   return ctx ? buildOrderSheet(ctx) : null
 })
 
-const blocked = computed(() => !summary.value?.conserved)
+const blocked = computed(() => (summary.value ? !canExportOrderSheet(summary.value) : true))
 
 async function prepare(): Promise<boolean> {
   const current = project.value

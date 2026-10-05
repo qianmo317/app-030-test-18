@@ -5,6 +5,7 @@
 import { computed, reactive, toRaw } from 'vue'
 import type { Project, ProjectKind, SizeRule } from './types'
 import { BUILTIN_RULES, DEFAULT_RULE_VERSION, ruleByVersion } from './sizeRules'
+import { normalizeProject } from './migrate'
 import { runMerge } from './merge'
 import {
   STORE_META,
@@ -59,7 +60,8 @@ export async function initStore(): Promise<void> {
     if (missingBuiltin.length > 0) {
       for (const rule of missingBuiltin) await idbPut(STORE_RULES, rule)
     }
-    store.projects = projects
+    // 旧存档可能缺字段，统一归一后再进入链路；缺量体数值的人会被守恒拦住而非静默丢弃
+    store.projects = projects.map((project) => normalizeProject(project, store.rules))
     sortProjects()
     const operator = meta.find((entry) => entry.key === 'operator')
     if (operator) store.operator = operator.value
