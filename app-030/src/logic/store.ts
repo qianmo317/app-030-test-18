@@ -6,6 +6,7 @@ import { computed, reactive, toRaw } from 'vue'
 import type { Project, ProjectKind, SizeRule } from './types'
 import { BUILTIN_RULES, DEFAULT_RULE_VERSION, ruleByVersion } from './sizeRules'
 import { runMerge } from './merge'
+import { normalizeProject } from './migrate'
 import {
   STORE_META,
   STORE_PROJECTS,
@@ -59,7 +60,11 @@ export async function initStore(): Promise<void> {
     if (missingBuiltin.length > 0) {
       for (const rule of missingBuiltin) await idbPut(STORE_RULES, rule)
     }
+    // 旧版本写出的存档可能缺字段：逐条规范化，整条不兼容的（返回 null）跳过，
+    // 不让一条坏存档拖垮整个项目列表（策略见 migrate.ts 头注释与 e2e 08 用例）
     store.projects = projects
+      .map((project) => normalizeProject(project))
+      .filter((project): project is Project => project !== null)
     sortProjects()
     const operator = meta.find((entry) => entry.key === 'operator')
     if (operator) store.operator = operator.value

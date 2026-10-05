@@ -45,3 +45,6 @@ yarn-error.log*
 .npm/
 .pnpm-store/
 *.tsbuildinfo
+
+# e2e 测试编译产物
+app-030/tests/e2e/.build/

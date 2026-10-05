@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "lib": ["ES2021", "DOM"],
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmitOnError": true,
+    "rootDir": "../..",
+    "outDir": "./.build"
+  },
+  "include": [
+    "../../src/logic/**/*.ts",
+    "../../src/data/**/*.json",
+    "node-shims.d.ts",
+    "helpers/**/*.ts",
+    "*.test.ts"
+  ],
+  "exclude": ["../../src/logic/store.ts", "../../src/logic/idb.ts"]
+}
